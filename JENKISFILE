@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    environment {
+        SONARQUBE_SERVER = 'http://54.173.253.86:9000'
+        DOCKER_HOST = 'tcp://100.24.235.142:2375'
+    }
+
+    stages {
+        stage('1.Git Checkout') {
+            steps {
+                git 'https://github.com/salmanbintariq/Jenkins_Docker_SonarQube.git'
+            }
+        }
+
+        stage('2.List Files') {
+            steps {
+                sh 'ls -al'
+                sh 'find . -name gradlew'
+            }
+        }
+
+        stage('3.Set Execute Permissions') {
+            steps {
+                sh 'chmod +x ./gradlew'
+            }
+        }
+
+        stage('4.SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh './gradlew sonarqube -Dsonar.projectKey=html-css -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=sqa_13f7e999e2d1c5b5dce09a2d5b9412d46d61f8d6'
+                }
+            }
+        }
+        
+        stage('5.Build Docker Image') {
+            steps {
+                script {
+                    docker.withServer("${DOCKER_HOST}") {
+                        def customImage = docker.build("salmanbintariq/html-css:v1")
+                    }
+                }
+            }
+        }
+        
+        stage('6. Run Docker Container') {
+            steps {
+                script {
+                    docker.withServer("${DOCKER_HOST}") {
+                        def app = docker.image("salmanbintariq/html-css:v1")
+                        app.run("-d -p 8080:80") // Adjust the run parameters as needed
+                    }
+                }
+            }
+        }
+    }
+}
