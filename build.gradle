@@ -5,7 +5,7 @@ plugins {
 sonarqube {
     properties {
         property "sonar.projectKey", "html-css"
-        property "sonar.host.url", "http://54.173.253.86:9000"
-        property "sonar.login", "sqa_13f7e999e2d1c5b5dce09a2d5b9412d46d61f8d6"
+        property "sonar.host.url", "http://<SQ-SERVER-IP>:9000"
+        property "sonar.login", "sq-token"
     }
 }
