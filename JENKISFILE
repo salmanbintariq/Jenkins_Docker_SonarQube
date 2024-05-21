@@ -29,7 +29,7 @@ pipeline {
         stage('4.SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh './gradlew sonarqube -Dsonar.projectKey=html-css -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=sqa_13f7e999e2d1c5b5dce09a2d5b9412d46d61f8d6'
+                    sh './gradlew sonarqube -Dsonar.projectKey=<SonarQube-Key> -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=<SonarQube-Token>'
                 }
             }
         }
